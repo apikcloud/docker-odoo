@@ -54,7 +54,7 @@ RUN sed -Ei 's@(^deb http://deb.debian.org/debian jessie-updates main$)@#\1@' /e
 RUN sed -i 's/mozilla\/DST_Root_CA_X3.crt/!mozilla\/DST_Root_CA_X3.crt/g' /etc/ca-certificates.conf && update-ca-certificates
 
 # Special case to get latest PostgreSQL client
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' >> /etc/apt/sources.list.d/postgresql.list \
+RUN echo 'deb http://apt-archive.postgresql.org/pub/repos/apt/ jessie-pgdg main' >> /etc/apt/sources.list.d/postgresql.list \
     && curl -SL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
     && apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client \
