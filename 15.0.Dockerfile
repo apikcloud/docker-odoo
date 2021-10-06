@@ -53,7 +53,7 @@ RUN apt-get -qq update \
     && sync
 
 # Install Odoo hard & soft dependencies, and utilities
-ARG ODOO_VERSION=15.0
+ARG ODOO_VERSION=14.0
 ARG ODOO_SOURCE=odoo/odoo
 RUN build_deps=" \
         build-essential \
@@ -155,7 +155,7 @@ ONBUILD ARG ADMIN_PASSWORD=admin
 # BUILD ARGS
 ONBUILD ARG GITHUB_USER
 ONBUILD ARG GITHUB_TOKEN
-ONBUILD ARG ODOO_VERSION=15.0
+ONBUILD ARG ODOO_VERSION=14.0
 ONBUILD ARG ODOO_SOURCE=odoo/odoo
 ONBUILD ARG ODOO_SOURCE_DEPTH=1
 ONBUILD ARG INSTALL_ODOO=false
