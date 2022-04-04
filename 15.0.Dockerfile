@@ -79,7 +79,7 @@ RUN build_deps=" \
     && apt-get install -yqq --no-install-recommends $build_deps \
     && pip install --no-cache-dir -r https://raw.githubusercontent.com/$ODOO_SOURCE/$ODOO_VERSION/requirements.txt \
     && pip install --no-cache-dir \
-        git+git://github.com/OCA/openupgradelib.git \
+        git+https://github.com/OCA/openupgradelib.git \
         git-aggregator \
         click-odoo-contrib \
         phonenumbers \
