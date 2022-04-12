@@ -70,7 +70,7 @@ RUN debs="libldap2-dev libsasl2-dev" \
     && apt-get install -yqq --no-install-recommends $debs \
     && pip install --no-cache-dir -r https://raw.githubusercontent.com/$ODOO_SOURCE/$ODOO_VERSION/requirements.txt \
     && pip install --no-cache-dir \
-        git+git://github.com/OCA/openupgradelib.git \
+        git+https://github.com/OCA/openupgradelib.git \
         git-aggregator \
         click-odoo-contrib \
         ipython \
