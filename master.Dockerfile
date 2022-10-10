@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 python:3.8.5-slim-buster AS base
+FROM python:3.8.5-slim-buster AS base
 
 EXPOSE 8069 8072
 
@@ -53,7 +53,7 @@ RUN apt-get -qq update \
     && sync
 
 # Install Odoo hard & soft dependencies, and utilities
-ARG ODOO_VERSION=14.0
+ARG ODOO_VERSION=15.0
 ARG ODOO_SOURCE=odoo/odoo
 RUN build_deps=" \
         build-essential \
@@ -79,7 +79,7 @@ RUN build_deps=" \
     && apt-get install -yqq --no-install-recommends $build_deps \
     && pip install --no-cache-dir -r https://raw.githubusercontent.com/$ODOO_SOURCE/$ODOO_VERSION/requirements.txt \
     && pip install --no-cache-dir \
-        git+git://github.com/OCA/openupgradelib.git \
+        git+https://github.com/OCA/openupgradelib.git \
         git-aggregator \
         click-odoo-contrib \
         phonenumbers \
@@ -155,7 +155,7 @@ ONBUILD ARG ADMIN_PASSWORD=admin
 # BUILD ARGS
 ONBUILD ARG GITHUB_USER
 ONBUILD ARG GITHUB_TOKEN
-ONBUILD ARG ODOO_VERSION=14.0
+ONBUILD ARG ODOO_VERSION=15.0
 ONBUILD ARG ODOO_SOURCE=odoo/odoo
 ONBUILD ARG ODOO_SOURCE_DEPTH=1
 ONBUILD ARG INSTALL_ODOO=false
