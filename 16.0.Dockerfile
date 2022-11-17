@@ -53,7 +53,7 @@ RUN apt-get -qq update \
     && sync
 
 # Install Odoo hard & soft dependencies, and utilities
-ARG ODOO_VERSION=master
+ARG ODOO_VERSION=16.0
 ARG ODOO_SOURCE=odoo/odoo
 RUN build_deps=" \
         build-essential \
