@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster AS base
+FROM python:3.10.6-slim-buster AS base
 
 EXPOSE 8069 8072
 
