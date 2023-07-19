@@ -22,12 +22,7 @@ ENV GIT_AUTHOR_NAME=docker-odoo \
 # See https://github.com/$ODOO_SOURCE/blob/$ODOO_VERSION/debian/control
 ARG WKHTMLTOPDF_VERSION=0.12.5
 ARG WKHTMLTOPDF_CHECKSUM='1140b0ab02aa6e17346af2f14ed0de807376de475ba90e1db3975f112fbd20bb'
-RUN apt-get -qq update \
-    && apt-get install -yqq --no-install-recommends \
-        curl \
-    && curl -SLo wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox_${WKHTMLTOPDF_VERSION}-1.stretch_amd64.deb \
-    && echo "${WKHTMLTOPDF_CHECKSUM}  wkhtmltox.deb" | sha256sum -c - \
-    && apt-get install -yqq --no-install-recommends \
+ARG SYS_PACKAGES="\
         ./wkhtmltox.deb \
         chromium \
         ffmpeg \
@@ -43,7 +38,15 @@ RUN apt-get -qq update \
         telnet \
         vim \
         zlibc \
-        sudo \
+        zip \
+        sudo"
+
+RUN apt-get -qq update \
+    && apt-get install -yqq --no-install-recommends \
+        curl \
+    && curl -SLo wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox_${WKHTMLTOPDF_VERSION}-1.stretch_amd64.deb \
+    && echo "${WKHTMLTOPDF_CHECKSUM}  wkhtmltox.deb" | sha256sum -c - \
+    && apt-get install -yqq --no-install-recommends $SYS_PACKAGES \
     && echo 'deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main' >> /etc/apt/sources.list.d/postgresql.list \
     && curl -SL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
     && apt-get update \
@@ -52,10 +55,12 @@ RUN apt-get -qq update \
     && rm -Rf wkhtmltox.deb /var/lib/apt/lists/* /tmp/* \
     && sync
 
+RUN pip install --upgrade pip
+
 # Install Odoo hard & soft dependencies, and utilities
 ARG ODOO_VERSION=16.0
 ARG ODOO_SOURCE=odoo/odoo
-RUN build_deps=" \
+ARG BUILD_DEPS=" \
         build-essential \
         libfreetype6-dev \
         libfribidi-dev \
@@ -74,23 +79,28 @@ RUN build_deps=" \
         tcl-dev \
         tk-dev \
         zlib1g-dev \
-    " \
-    && apt-get update \
-    && apt-get install -yqq --no-install-recommends $build_deps \
-    && pip install --upgrade pip \
-    && pip install --no-cache-dir -r https://raw.githubusercontent.com/$ODOO_SOURCE/$ODOO_VERSION/requirements.txt \
-    && pip install --no-cache-dir \
+    "
+
+ARG PYTHON_PACKAGES="\
         git+https://github.com/OCA/openupgradelib.git \
-        git-aggregator \
+        git+https://github.com/apikcloud/git-aggregator.git \
         click-odoo-contrib \
         phonenumbers \
         ipython \
         pysnooper \
         ipdb \
         pg_activity \
-        geoip2 \
-    && (python3 -m compileall -q /usr/local/lib/python3.6/ || true) \
-    && apt-get purge -yqq $build_deps \
+        geoip2"
+
+RUN apt-get update \
+    && apt-get install -yqq --no-install-recommends $BUILD_DEPS
+
+RUN pip install --no-cache-dir -r https://raw.githubusercontent.com/$ODOO_SOURCE/$ODOO_VERSION/requirements.txt
+RUN pip install --no-cache-dir $PYTHON_PACKAGES
+
+RUN (python3 -m compileall -q /usr/local/lib/python3.10/ || true)
+
+RUN apt-get purge -yqq $BUILD_DEPS \
     && apt-get autopurge -yqq \
     && rm -Rf /var/lib/apt/lists/* /tmp/*
 
