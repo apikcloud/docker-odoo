@@ -39,6 +39,7 @@ ARG SYS_PACKAGES="\
         vim \
         zlibc \
         zip \
+        xmlsec1 \
         sudo"
 
 RUN apt-get -qq update \
@@ -90,6 +91,7 @@ ARG PYTHON_PACKAGES="\
         pysnooper \
         ipdb \
         pg_activity \
+        pysaml2 \
         geoip2"
 
 RUN apt-get update \
